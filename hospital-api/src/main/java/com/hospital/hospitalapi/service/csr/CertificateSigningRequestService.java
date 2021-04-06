@@ -3,11 +3,13 @@ package com.hospital.hospitalapi.service.csr;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import com.hospital.hospitalapi.domain.cert.CertificateSigningRequest;
 import com.hospital.hospitalapi.repository.CertificateSigningRequestRepository;
+import com.hospital.hospitalapi.web.rest.csr.payload.response.CertificateSigningRequestDTO;
 
 import org.bouncycastle.asn1.ASN1Encodable;
 import org.bouncycastle.asn1.DEROctetString;
@@ -17,6 +19,7 @@ import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,8 +29,13 @@ public class CertificateSigningRequestService {
     @Autowired
     private CertificateSigningRequestRepository repository;
 
-    public List<CertificateSigningRequest> getAllSigningRequests() {
-        return repository.findAll();
+    @Autowired
+    private ModelMapper modelMapper;
+
+    public Set<CertificateSigningRequestDTO> getAllSigningRequests() {
+        return repository.findAll().stream()
+                .map((request) -> modelMapper.map(request, CertificateSigningRequestDTO.class))
+                .collect(Collectors.toSet());
     }
 
     public void saveRequest(byte[] request, String username) throws IOException {

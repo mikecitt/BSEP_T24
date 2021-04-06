@@ -1,10 +1,11 @@
 package com.hospital.hospitalapi.web.rest.csr;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Set;
 
-import com.hospital.hospitalapi.domain.cert.CertificateSigningRequest;
 import com.hospital.hospitalapi.service.csr.CertificateSigningRequestService;
+import com.hospital.hospitalapi.util.ReturnResponse;
+import com.hospital.hospitalapi.web.rest.csr.payload.response.CertificateSigningRequestDTO;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,10 +24,8 @@ public class CertificateSigningRequestResource {
     private CertificateSigningRequestService csrService;
 
     @GetMapping
-    public ResponseEntity<?> getAllSigningRequests() {
-        List<CertificateSigningRequest> requests = csrService.getAllSigningRequests();
-
-        return new ResponseEntity<>(requests, HttpStatus.OK);
+    public ResponseEntity<Set<CertificateSigningRequestDTO>> getAllSigningRequests() {
+        return ReturnResponse.entityGet(csrService.getAllSigningRequests());
     }
 
     @PostMapping
