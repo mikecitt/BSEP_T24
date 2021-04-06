@@ -1,0 +1,34 @@
+spring:
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/hospital
+    username: root
+    password: 12345
+  jpa:
+    hibernate.ddl-auto: update
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: spring.angular123@gmail.com
+    password: springANGULAR123
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            require: true
+
+application:
+  swagger:
+    title: Therappy API
+    description: Therappy API documentation
+    version: 1.0.0
+    terms-of-service-url:
+    contact-name: Petar Cerovic
+    contact-url: inviggo.com
+    contact-email: petar.cerovic@inviggo.com
+    license:
+    license-url:
+  security:
+    secret: vAZjTXRB
+    expiration: 18000
