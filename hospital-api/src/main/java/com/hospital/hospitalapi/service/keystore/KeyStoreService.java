@@ -26,7 +26,7 @@ import com.hospital.hospitalapi.configuration.constants.Constants.CERT_TYPE;
 import com.hospital.hospitalapi.domain.cert.Certificate;
 import com.hospital.hospitalapi.domain.cert.IssuerData;
 import com.hospital.hospitalapi.domain.cert.SubjectData;
-import com.hospital.hospitalapi.repository.KeyStoreRepository;
+import com.hospital.hospitalapi.repository.CertificateRepository;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.asn1.x509.BasicConstraints;
@@ -51,10 +51,10 @@ import org.springframework.stereotype.Service;
 public class KeyStoreService {
 
     @Autowired
-    private KeyStoreRepository keyStoreRepository;
+    private CertificateRepository certificateRepository;
 
     public Certificate save(Certificate certificate) {
-        return keyStoreRepository.save(certificate);
+        return certificateRepository.save(certificate);
     }
 
     public void writeCertificateToFile(KeyStore keyStore, String alias, String certDirectory)

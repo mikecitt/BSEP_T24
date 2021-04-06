@@ -2,16 +2,19 @@ package com.hospital.hospitalapi.domain.cert;
 
 import javax.persistence.*;
 
+import lombok.Data;
+
 @Entity
 @Table(name = "certificate_signing_requests")
+@Data
 public class CertificateSigningRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "csr", columnDefinition = "TEXT")
-    private String csr;
+    @Column(name = "csr", columnDefinition = "BLOB")
+    private byte[] csr;
 
     @Column(name = "issuer_name")
     private String issuerName;
@@ -26,7 +29,7 @@ public class CertificateSigningRequest {
 
     }
 
-    public CertificateSigningRequest(String csr, String issuerName, String username) {
+    public CertificateSigningRequest(byte[] csr, String issuerName, String username) {
         this.csr = csr;
         this.issuerName = issuerName;
         this.username = username;

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface KeyStoreRepository extends JpaRepository<Certificate, String> {
+public interface CertificateRepository extends JpaRepository<Certificate, String> {
     Certificate findBySerialNumber(String serialNumber);
 }

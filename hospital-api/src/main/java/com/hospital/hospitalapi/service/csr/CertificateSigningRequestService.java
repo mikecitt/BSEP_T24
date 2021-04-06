@@ -1,7 +1,14 @@
 package com.hospital.hospitalapi.service.csr;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.StringReader;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.security.PublicKey;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -19,6 +26,7 @@ import org.bouncycastle.asn1.pkcs.Attribute;
 import org.bouncycastle.asn1.pkcs.PKCSObjectIdentifiers;
 import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequest;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -43,7 +51,7 @@ public class CertificateSigningRequestService {
         PKCS10CertificationRequest certReq = (PKCS10CertificationRequest) pm.readObject();
         Map<String, String> attributes = this.parseCsrAttributes(certReq);
 
-        repository.save(new CertificateSigningRequest(new String(request), attributes.get("issuerId"), username));
+        repository.save(new CertificateSigningRequest(request, attributes.get("issuerId"), username));
     }
 
     private Map<String, String> parseCsrAttributes(PKCS10CertificationRequest csr) {
@@ -66,5 +74,36 @@ public class CertificateSigningRequestService {
             }
         }
         return result;
+    }
+
+    public PublicKey getPublicKeyFromCSR(Long id) {
+        try {
+            PKCS10CertificationRequest csr = extractCertificationRequest(repository.findById(id).getCsr());
+
+            JcaPKCS10CertificationRequest jcaCertRequest = new JcaPKCS10CertificationRequest(csr.getEncoded())
+                    .setProvider("BC");
+            return jcaCertRequest.getPublicKey();
+        } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private PKCS10CertificationRequest extractCertificationRequest(byte[] rawRequest) throws IOException {
+        ByteArrayInputStream bis = new ByteArrayInputStream(rawRequest);
+        Reader pemReader = new BufferedReader(new InputStreamReader(bis));
+        PEMParser pemParser = new PEMParser(pemReader);
+
+        Object parsedObj = pemParser.readObject();
+        if (parsedObj instanceof PKCS10CertificationRequest) {
+            return (PKCS10CertificationRequest) parsedObj;
+        }
+
+        throw new IOException();
+    }
+
+    public CertificateSigningRequest findById(Long id) {
+        return repository.findById(id);
     }
 }
