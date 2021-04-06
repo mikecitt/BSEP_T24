@@ -39,9 +39,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and().authorizeRequests()
-                .antMatchers("/api/auth/login", "/api/auth/register", "/api/auth/activate", "/api/auth/forgot-password",
-                        "/api/auth/reset-password")
-                .permitAll().anyRequest().authenticated().and().csrf().disable();
+                // .antMatchers("/api/auth/login", "/api/auth/register", "/api/auth/activate",
+                // "/api/auth/forgot-password",
+                // "/api/auth/reset-password")
+                .antMatchers("/**").permitAll().anyRequest().authenticated().and().csrf().disable();
 
         http.addFilterBefore(new TokenAuthenticationFilter(userDetailsService, tokenProvider),
                 BasicAuthenticationFilter.class);

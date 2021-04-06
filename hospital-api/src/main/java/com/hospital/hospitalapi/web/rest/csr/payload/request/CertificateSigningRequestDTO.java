@@ -10,4 +10,5 @@ public class CertificateSigningRequestDTO {
     private String locality;
     private String country;
     private String email;
+    private String issuer;
 }
