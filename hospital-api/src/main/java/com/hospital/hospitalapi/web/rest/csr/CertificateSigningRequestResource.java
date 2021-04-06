@@ -35,5 +35,4 @@ public class CertificateSigningRequestResource {
 
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
 }

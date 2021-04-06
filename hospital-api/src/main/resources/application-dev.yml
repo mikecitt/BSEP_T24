@@ -32,3 +32,7 @@ application:
   security:
     secret: vAZjTXRB
     expiration: 18000
+  platform:
+    keystore-path: pki/keystore/platformKeyStore.jks
+    keystore-pass: pass
+    cert-dir: pki/certificates

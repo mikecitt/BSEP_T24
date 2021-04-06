@@ -13,6 +13,8 @@ public class ApplicationProperties {
 
     public final Security security = new Security();
 
+    public final Platform platform = new Platform();
+
     public static class Swagger {
 
         private String title;
@@ -138,11 +140,45 @@ public class ApplicationProperties {
         }
     }
 
+    public static class Platform {
+        private String keystorePath;
+        private String keystorePass;
+        private String certDir;
+
+        public String getKeystorePath() {
+            return keystorePath;
+        }
+
+        public void setKeystorePath(String keystorePath) {
+            this.keystorePath = keystorePath;
+        }
+
+        public String getKeystorePass() {
+            return keystorePass;
+        }
+
+        public void setKeystorePass(String keystorePass) {
+            this.keystorePass = keystorePass;
+        }
+
+        public String getCertDir() {
+            return certDir;
+        }
+
+        public void setCertDir(String certDir) {
+            this.certDir = certDir;
+        }
+    }
+
     public Swagger getSwagger() {
         return swagger;
     }
 
     public Security getSecurity() {
         return security;
+    }
+
+    public Platform getPlatform() {
+        return platform;
     }
 }
