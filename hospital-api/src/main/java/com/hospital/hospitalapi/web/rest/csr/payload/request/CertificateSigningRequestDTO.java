@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class CertificateSigningRequestDTO {
-    private Long id;
     private String commonName;
     private String organization;
     private String locality;
