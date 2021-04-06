@@ -17,6 +17,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 import com.hospital.hospitalapi.configuration.ApplicationProperties;
 import com.hospital.hospitalapi.configuration.constants.Constants;
@@ -62,6 +63,10 @@ public class CertificateService {
 
   @Autowired
   private ApplicationProperties applicationProperties;
+
+  public List<Certificate> getAll() {
+    return certificateRepository.findAll();
+  }
 
   public Certificate createCertificate(Long csrId, CERT_TYPE templateType) {
     CertificateSigningRequest csr = certificateSigningRequestService.findById(csrId);

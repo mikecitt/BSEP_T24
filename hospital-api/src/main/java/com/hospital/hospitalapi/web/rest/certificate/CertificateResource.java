@@ -1,11 +1,15 @@
 package com.hospital.hospitalapi.web.rest.certificate;
 
+import java.util.List;
+
 import com.hospital.hospitalapi.configuration.constants.Constants;
+import com.hospital.hospitalapi.domain.cert.Certificate;
 import com.hospital.hospitalapi.service.certificate.CertificateService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +21,11 @@ public class CertificateResource {
 
   @Autowired
   private CertificateService certificateService;
+
+  @GetMapping
+  public ResponseEntity<List<Certificate>> getAll() {
+    return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
+  }
 
   @PostMapping("/issue-certificate/{csrId}/{templateName}")
   public ResponseEntity<?> issueCertificate(@PathVariable Long csrId, @PathVariable String templateName) {
