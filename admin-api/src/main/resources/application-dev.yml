@@ -1,0 +1,4 @@
+application:
+  keystore:
+    filepath: src/main/resources/keystore/keystore.jks
+    password: 12345
