@@ -18,6 +18,9 @@ public class ApplicationProperties {
   @Getter
   public final TrustStore trustStore = new TrustStore();
 
+  @Getter
+  public final Certificates certificates = new Certificates();
+
   public static class KeyStore {
 
     @Getter
@@ -38,5 +41,12 @@ public class ApplicationProperties {
     @Getter
     @Setter
     private String password;
+  }
+
+  public static class Certificates {
+
+    @Getter
+    @Setter
+    private String filepath;
   }
 }

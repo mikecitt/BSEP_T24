@@ -2,3 +2,8 @@ application:
   keystore:
     filepath: src/main/resources/keystore/keystore.jks
     password: 12345
+  trustStore:
+    filepath: src/main/resources/keystore/trustStore.jks
+    password: 12345
+  certificates:
+    filepath: src/main/resources/generatedCerts
