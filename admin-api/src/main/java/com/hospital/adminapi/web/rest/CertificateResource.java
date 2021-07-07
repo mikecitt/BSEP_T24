@@ -40,4 +40,14 @@ public class CertificateResource {
     public ResponseEntity<?> getCertificateValidity(@PathVariable Long serialNumber) {
         return new ResponseEntity<>(service.isRevoked(serialNumber), HttpStatus.OK);
     }
+
+    @PostMapping("/{serialNumber}/revoke")
+    public ResponseEntity<?> revokeCertificate(@PathVariable Long serialNumber) {
+        try {
+            service.revokeCertificate(serialNumber);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
