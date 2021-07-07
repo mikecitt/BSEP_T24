@@ -7,6 +7,7 @@ public class Constants {
   };
 
   public static final Integer ROOT_CERT_DURATION = 10; // znaci 30 godina
+  public static final Integer LEAF_CERT_DURATION = 10; // znaci 30 godina
 
   public static String ROOT_ALIAS = "1";
   public static String PKI_ALIAS = "2";

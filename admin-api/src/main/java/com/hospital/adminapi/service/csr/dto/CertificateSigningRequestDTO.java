@@ -14,6 +14,10 @@ public class CertificateSigningRequestDTO {
     private String locality;
     private String email;
 
+    public CertificateSigningRequestDTO() {
+        
+    }
+
     public CertificateSigningRequestDTO(CertificateSigningRequest csr) {
         this.id = csr.getId();
         this.commonName = csr.getCommonName();

@@ -1,12 +1,16 @@
 package com.hospital.adminapi.service.csr;
 
-import java.io.IOException;
+import java.io.*;
+import java.security.InvalidKeyException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
+import java.security.PublicKey;
 import java.security.SecureRandom;
+import java.util.Base64;
 import java.util.HashMap;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.security.auth.x500.X500Principal;
@@ -15,16 +19,16 @@ import com.hospital.adminapi.domain.CertificateSigningRequest;
 import com.hospital.adminapi.repository.CertificateSigningRequestRepository;
 import com.hospital.adminapi.service.csr.dto.CertificateSigningRequestDTO;
 
+import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.bouncycastle.pkcs.PKCS10CertificationRequest;
 import org.bouncycastle.pkcs.PKCS10CertificationRequestBuilder;
+import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequest;
 import org.bouncycastle.pkcs.jcajce.JcaPKCS10CertificationRequestBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.*;
 
 @Service
 public class CertificateSigningRequestService {
@@ -72,7 +76,8 @@ public class CertificateSigningRequestService {
     csrDb.setOrganization(csrDTO.getOrganization());
     csrDb.setOrganizationUnit(csrDTO.getOrganizationUnit());
     csrDb.setCertificate(csr.getEncoded());
-    
+    csrDb.setUsername("user123");
+
     repository.save(csrDb);
   }
 
@@ -87,4 +92,31 @@ public class CertificateSigningRequestService {
     }
     return null;
   }
+
+  public PublicKey getPublicKeyFromCSR(Long id) {
+    try {
+      PKCS10CertificationRequest csr = extractCertificationRequest(get(id).getCertificate());
+
+      JcaPKCS10CertificationRequest jcaCertRequest = new JcaPKCS10CertificationRequest(csr.getEncoded())
+          .setProvider("BC");
+      return jcaCertRequest.getPublicKey();
+    } catch (IOException | NoSuchAlgorithmException | InvalidKeyException e) {
+      e.printStackTrace();
+    }
+
+    return null;
+  }
+
+  private PKCS10CertificationRequest extractCertificationRequest(byte[] rawRequest) throws IOException {
+    ByteArrayInputStream bis = new ByteArrayInputStream(rawRequest);
+    Reader pemReader = new BufferedReader(new InputStreamReader(bis));
+    PEMParser pemParser = new PEMParser(pemReader);
+
+    Object parsedObj = pemParser.readObject();
+    if (parsedObj instanceof PKCS10CertificationRequest) {
+        return (PKCS10CertificationRequest) parsedObj;
+    }
+
+    throw new IOException();
+}
 }

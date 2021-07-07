@@ -30,6 +30,12 @@ public class Certificate {
     this.serialNumber = serialNumber;
   }
 
+  public Certificate(BigInteger serialNumber, Timestamp startDate, Timestamp endDate) {
+    this.serialNumber = serialNumber;
+    this.startDate = startDate;
+    this.endDate = endDate;
+  }
+
   public Certificate(BigInteger serialNumber, Timestamp startDate, Timestamp endDate, String commonName, String alias) {
     this.serialNumber = serialNumber;
     this.startDate = startDate;

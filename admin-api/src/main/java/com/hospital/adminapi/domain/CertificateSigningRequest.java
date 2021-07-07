@@ -14,13 +14,13 @@ public class CertificateSigningRequest {
   @GeneratedValue
   private Long id;
 
-  @Column(unique = true)
   private String commonName;
   private String organization;
   private String organizationUnit;
   private String country;
   private String locality;
   private String email;
+  private String username;
 
   @Column(columnDefinition = "BLOB")
   private byte[] certificate;

@@ -15,4 +15,9 @@ public class IssuerData {
 	private PrivateKey privateKey;
 	private X500Name x500name;
 	private PublicKey publicKey;
+
+	public IssuerData(PrivateKey privateKey, X500Name x500name) {
+        this.privateKey = privateKey;
+        this.x500name = x500name;
+    }
 }
