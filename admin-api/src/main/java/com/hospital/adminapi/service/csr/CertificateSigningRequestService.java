@@ -19,7 +19,6 @@ import com.hospital.adminapi.domain.CertificateSigningRequest;
 import com.hospital.adminapi.repository.CertificateSigningRequestRepository;
 import com.hospital.adminapi.service.csr.dto.CertificateSigningRequestDTO;
 
-import org.bouncycastle.openssl.PEMParser;
 import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
@@ -95,7 +94,7 @@ public class CertificateSigningRequestService {
 
   public PublicKey getPublicKeyFromCSR(Long id) {
     try {
-      PKCS10CertificationRequest csr = extractCertificationRequest(get(id).getCertificate());
+      PKCS10CertificationRequest csr = new PKCS10CertificationRequest(get(id).getCertificate());
 
       JcaPKCS10CertificationRequest jcaCertRequest = new JcaPKCS10CertificationRequest(csr.getEncoded())
           .setProvider("BC");
@@ -106,17 +105,4 @@ public class CertificateSigningRequestService {
 
     return null;
   }
-
-  private PKCS10CertificationRequest extractCertificationRequest(byte[] rawRequest) throws IOException {
-    ByteArrayInputStream bis = new ByteArrayInputStream(rawRequest);
-    Reader pemReader = new BufferedReader(new InputStreamReader(bis));
-    PEMParser pemParser = new PEMParser(pemReader);
-
-    Object parsedObj = pemParser.readObject();
-    if (parsedObj instanceof PKCS10CertificationRequest) {
-        return (PKCS10CertificationRequest) parsedObj;
-    }
-
-    throw new IOException();
-}
 }

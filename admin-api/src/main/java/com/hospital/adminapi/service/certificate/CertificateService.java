@@ -76,8 +76,7 @@ public class CertificateService {
   }
 
   public void revokeCertificate(Long serialNumber) throws Exception {
-    Optional<Certificate> cert = certificateRepository
-        .findBySerialNumber(new BigInteger(serialNumber.toString()));
+    Optional<Certificate> cert = certificateRepository.findBySerialNumber(new BigInteger(serialNumber.toString()));
     if (cert.isEmpty()) {
       throw new Exception("Certificate with this serial number does not exist in this context");
     }
