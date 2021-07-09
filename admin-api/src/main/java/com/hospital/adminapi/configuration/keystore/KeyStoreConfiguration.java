@@ -53,7 +53,7 @@ public class KeyStoreConfiguration {
                 // trustStore.load(null,
                 // applicationProperties.getTrustStore().getPassword().toCharArray());
 
-                X509Certificate root_cert = generateRoot(keyStore);
+                generateRoot(keyStore);
                 this.writeCertToFile(keyStore, ROOT_ALIAS);
                 // trustStore.setCertificateEntry(ROOT_ALIAS, root_cert);
 

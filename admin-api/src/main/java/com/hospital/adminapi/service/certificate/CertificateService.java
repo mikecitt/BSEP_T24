@@ -71,12 +71,16 @@ public class CertificateService {
     return certificateRepository.findAll();
   }
 
+  public Optional<Certificate> findBySerialNumber(Long serialNumber) {
+    return certificateRepository.findBySerialNumber(serialNumber);
+  }
+
   public boolean isRevoked(Long serialNumber) {
-    return certificateRevokeRepository.findBySerialNumber(new BigInteger(serialNumber.toString())).isPresent();
+    return certificateRevokeRepository.findBySerialNumber(serialNumber).isPresent();
   }
 
   public void revokeCertificate(Long serialNumber) throws Exception {
-    Optional<Certificate> cert = certificateRepository.findBySerialNumber(new BigInteger(serialNumber.toString()));
+    Optional<Certificate> cert = certificateRepository.findBySerialNumber(serialNumber);
     if (cert.isEmpty()) {
       throw new Exception("Certificate with this serial number does not exist in this context");
     }
@@ -106,12 +110,11 @@ public class CertificateService {
     char[] keyStorePass = applicationProperties.getKeyStore().getPassword().toCharArray();
 
     X509Certificate certificate = generateCertificate(subjectData, issuerData, Constants.CERT_TYPE.LEAF_CERT);
-    Certificate myCertificate = new Certificate(new BigInteger(csr.getId().toString()),
+    Certificate myCertificate = new Certificate(csr.getId(),
         new java.sql.Timestamp(subjectData.getStartDate().getTime()),
         new java.sql.Timestamp(subjectData.getEndDate().getTime()));
     myCertificate.setAlias(csr.getId().toString());
     myCertificate.setCommonName(csr.getCommonName());
-    // myCertificate.setCertKeyStorePath(keyStorePath);
 
     try {
       KeyStore keyStore = KeyStore.getInstance("JKS", "SUN");
@@ -120,16 +123,18 @@ public class CertificateService {
         keyStore.load(new FileInputStream(f), keyStorePass);
       } else {
         keyStore.load(null, keyStorePass);
-
-        certificateRepository.save(myCertificate);
-
-        keyStore.setKeyEntry(Constants.ROOT_ALIAS, issuerKey, keyStorePass,
-            new java.security.cert.Certificate[] { certificate });
-
-        keyStore.store(new FileOutputStream(keyStorePath), keyStorePass);
-
-        return myCertificate;
       }
+      certificateRepository.save(myCertificate);
+
+      keyStore.setKeyEntry(myCertificate.getAlias(), issuerKey, keyStorePass,
+          new java.security.cert.Certificate[] { certificate });
+
+      keyStore.store(new FileOutputStream(keyStorePath), keyStorePass);
+      // KeyStoreConfiguration.writeCertificateToFile(keyStore,
+      // myCertificate.getAlias());
+
+      return myCertificate;
+
     } catch (IOException | CertificateException | NoSuchAlgorithmException | NoSuchProviderException
         | KeyStoreException e) {
       e.printStackTrace();

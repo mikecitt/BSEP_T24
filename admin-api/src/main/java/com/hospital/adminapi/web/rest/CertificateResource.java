@@ -1,5 +1,11 @@
 package com.hospital.adminapi.web.rest;
 
+import java.time.Instant;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import com.hospital.adminapi.domain.Certificate;
 import com.hospital.adminapi.service.certificate.CertificateService;
 import com.hospital.adminapi.service.certificate.dto.CertificateResponseDTO;
 import com.hospital.adminapi.util.constants.Constants.CERT_TYPE;
@@ -27,18 +33,28 @@ public class CertificateResource {
 
     @GetMapping
     public ResponseEntity<?> getCertificates() {
-        return new ResponseEntity<>(
-            service.getAll().stream().map(cert -> {
-                CertificateResponseDTO dto = new CertificateResponseDTO(cert);
-                dto.setRevoked(service.isRevoked(dto.getSerialNumber().longValue())); // testing
-                return dto;
-            }), HttpStatus.OK
-        );
+        List<CertificateResponseDTO> response = service.getAll().stream().map(cert -> {
+            CertificateResponseDTO dto = new CertificateResponseDTO(cert);
+            System.out.println(dto);
+            dto.setRevoked(service
+                    .isRevoked(dto.getSerialNumber()) /* || dto.getEndDate().toInstant().isBefore(Instant.now()) */);
+            return dto;
+        }).collect(Collectors.toList());
+
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @GetMapping("/{serialNumber}/validity")
     public ResponseEntity<?> getCertificateValidity(@PathVariable Long serialNumber) {
-        return new ResponseEntity<>(service.isRevoked(serialNumber), HttpStatus.OK);
+        Optional<Certificate> certificate = service.findBySerialNumber(serialNumber);
+
+        if (!certificate.isPresent()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+
+        return new ResponseEntity<>(
+                !service.isRevoked(serialNumber) || certificate.get().getEndDate().toInstant().isBefore(Instant.now()),
+                HttpStatus.OK);
     }
 
     @PostMapping("/{serialNumber}/revoke")

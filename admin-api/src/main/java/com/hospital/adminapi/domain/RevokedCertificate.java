@@ -1,6 +1,5 @@
 package com.hospital.adminapi.domain;
 
-import java.math.BigInteger;
 import java.sql.Timestamp;
 
 import javax.persistence.Column;
@@ -19,13 +18,17 @@ public class RevokedCertificate {
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private BigInteger serialNumber;
+    private Long serialNumber;
 
     @Column
     private Timestamp revokingDate;
 
-    public RevokedCertificate(BigInteger serialNumber, Timestamp revokingDate) {
+    public RevokedCertificate(Long serialNumber, Timestamp revokingDate) {
         this.serialNumber = serialNumber;
         this.revokingDate = revokingDate;
+    }
+
+    public RevokedCertificate() {
+
     }
 }
